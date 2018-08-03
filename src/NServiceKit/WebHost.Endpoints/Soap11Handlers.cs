@@ -4,6 +4,7 @@ using NServiceKit.Common.Web;
 using NServiceKit.ServiceHost;
 using NServiceKit.WebHost.Endpoints.Metadata;
 using NServiceKit.WebHost.Endpoints.Support;
+using System.Text;
 
 namespace NServiceKit.WebHost.Endpoints
 {
@@ -80,7 +81,8 @@ namespace NServiceKit.WebHost.Endpoints
             var responseMessage = Send(null);
 
             context.Response.ContentType = GetSoapContentType(context.Request.ContentType);
-            using (var writer = XmlWriter.Create(context.Response.OutputStream))
+            var _settings = new XmlWriterSettings { OmitXmlDeclaration = true, ConformanceLevel = ConformanceLevel.Fragment, Encoding = new UTF8Encoding(false) };
+            using (var writer = XmlWriter.Create(context.Response.OutputStream, _settings))
             {
                 responseMessage.WriteMessage(writer);
             }
@@ -103,7 +105,8 @@ namespace NServiceKit.WebHost.Endpoints
             var responseMessage = Send(null, httpReq, httpRes);
 
             httpRes.ContentType = GetSoapContentType(httpReq.ContentType);
-            using (var writer = XmlWriter.Create(httpRes.OutputStream))
+            var _settings = new XmlWriterSettings { OmitXmlDeclaration = true, ConformanceLevel = ConformanceLevel.Fragment, Encoding = new UTF8Encoding(false) };
+            using (var writer = XmlWriter.Create(httpRes.OutputStream, _settings))
             {
                 responseMessage.WriteMessage(writer);
             }
